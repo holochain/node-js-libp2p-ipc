@@ -26,6 +26,7 @@
     "libp2p-secio": "^0.10.0",
     "libp2p-spdy": "^0.12.1",
     "libp2p-tcp": "^0.12.1",
+    "msgpack-lite": "^0.1.26",
     "node-p2p-ipc": "github:holochain/node-p2p-ipc#1a9ee69c832015546d8ad46838275305eced673b",
     "peer-id": "^0.11.0",
     "pull-stream": "^3.6.9"
