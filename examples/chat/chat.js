@@ -9,8 +9,6 @@ const msgpack = require('msgpack-lite')
 
 const { IpcClient } = require('node-p2p-ipc')
 
-//const { Node } = require('../../lib/node')
-
 function _sleep (ms) {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, ms)
