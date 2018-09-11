@@ -28,7 +28,7 @@ async function _main () {
     }))
   })
 
-  node.on('ipcMessage', opt => {
+  node.on('ipcMessage', async opt => {
     try {
       const msg = msgpack.decode(opt.data)
       switch (msg.type) {
@@ -36,10 +36,29 @@ async function _main () {
           opt.resolve(msgpack.encode(node.getId().substr(0, 8)))
           break
         case 'message':
+          opt.resolve(Buffer.alloc(0))
+          // trying to store data in dht??
+          const s = msg.data.match(/^\/store\s*([^=]+)=(.+)$/)
+          if (s && s.length === 3) {
+            const key = s[1].trim()
+            const val = s[2].trim()
+            console.log(`store '${key}'='${val}'`)
+            await node.store(key, val)
+            break
+          }
+          // trying to fetch data from dht??
+          const f = msg.data.match(/^\/fetch\s*(.+)$/)
+          if (f && f.length === 2) {
+            const key = f[1].trim()
+            console.log(`fetch '${key}'`)
+            const res = node.fetch(key)
+            console.log(`fetched '${key}' = '${res.toString()}'`)
+            break
+          }
+          // otherwise, it's just a message
           for (let peer of node.listPeers()) {
             node.send(peer, msgpack.encode(msg.data)).then(() => {}, () => {})
           }
-          opt.resolve(Buffer.alloc(0))
           break
         default:
           opt.reject(new Error('unhandled message: ' + msg.type))
